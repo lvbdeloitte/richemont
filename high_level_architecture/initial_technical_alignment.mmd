@@ -1,0 +1,133 @@
+flowchart LR
+
+    %% Client access channels (far left)
+    subgraph LaneClients["Client Channels"]
+        direction TB
+        Browser["End Users<br/>Browser UI"]
+    end
+
+    %% SAP Cloud Platform ingress layer
+    subgraph LaneAccess["SAP Cloud Platform"]
+        direction TB
+        CFR["CF Routing Service"]
+    end
+
+    %% Mendix runtime with components and scaling footprint
+    subgraph LaneApp["Mendix Application Runtime"]
+        direction TB
+
+        subgraph AppCore["Application Components"]
+            direction TB
+            UI["UI & Experience Layer"]
+            Workflow["Workflow & Business Rules"]
+            Integration["Integration Services"]
+            DataSvc["Data Access Services"]
+            SecurityAdapter["Security Adapter"]
+
+            UI --> Workflow
+            Workflow --> Integration
+            Integration --> DataSvc
+            SecurityAdapter -.-> Integration
+        end
+
+        subgraph AppScaling["Auto-Scaling Footprint"]
+            direction LR
+            VScale["⬆️Scale (vertical)"]
+            C0["Container 0<br/>MBS"]
+            C1["Container 1<br/>MBS"]
+            CN["Container 1 + n<br/>MBS"]
+            HScale["Scale (horizontal) ➡️"]
+
+            VScale -.- C0
+            C0 --- C1
+            C1 --- CN
+            CN -.- HScale
+        end
+    end
+
+    %% Cloud Foundry services leveraged by the app
+    subgraph LaneServices["Cloud Foundry Services"]
+        direction LR
+        CFAS["CF Auto<br/>Scaling<br/>Service"]
+        CS["Connectivity<br/>service"]
+        XS["XS-UAA"]
+    end
+
+    %% Persistent storage landscape
+    subgraph LaneData["Persistent Data Layer"]
+        direction TB
+        PG[("PostgreSQL")]
+        OS[("Object Storage")]
+        Backup["Archive &<br/>Retention"]
+    end
+
+    %% Identity services and upstream provisioning
+    subgraph LaneIdentity["Identity Federation"]
+        direction TB
+
+        subgraph SIS["SAP Cloud Identity Services"]
+            direction TB
+            IA["Identity Authentication"]
+            IADB[("Users")]
+        end
+
+        subgraph MAS["MyAccess Services"]
+            direction TB
+            MA1["User creation"]
+        end
+    end
+
+    %% Client entry flows
+    LaneClients -->|HTTPS| CFR
+    CFR -->|Routing / URL Mapping| UI
+
+    %% Application to platform integrations
+    Integration -->|SAP RFC / OData| CS
+    SecurityAdapter -->|OAuth2 Client| XS
+    AppScaling --> CFAS
+    CFAS --- CS
+    CS --- XS
+
+    %% Data access patterns
+    DataSvc -->|JDBC| PG
+    DataSvc -->|BTP Object Store API| OS
+    OS -->|Lifecycle Policies| Backup
+    PG -->|Daily Snapshots| Backup
+
+    %% Identity provisioning flows
+    XS -->|SAML 2.0| IA
+    IA -->|SCIM| IADB
+    MA1 -->|SCIM Provisioning| IA
+    SIS ~~~ MAS
+
+    %% Feedback loops for scaling guidance
+    CFAS -.->|Scaling Policies| HScale
+    CFAS -.->|Instance Size Recommendation| VScale
+    linkStyle 14 stroke-width:0,stroke-opacity:0
+    linkStyle 15 stroke-width:0,stroke-opacity:0
+
+    %% Styling for light background
+    style LaneClients fill:#e8f3ff,color:#0f172a,stroke:#1d4ed8,stroke-width:1.5
+    style LaneAccess fill:#e0f2fe,color:#0f172a,stroke:#1d4ed8,stroke-width:1.5
+    style LaneApp fill:#f8fafc,color:#0f172a,stroke:#1d4ed8,stroke-width:1.5
+    style AppCore fill:#ffffff,color:#0f172a,stroke:#60a5fa,stroke-dasharray:4 2
+    style AppScaling fill:#ffffff,color:#0f172a,stroke:#60a5fa,stroke-dasharray:4 2
+    style LaneServices fill:#e6f9f2,color:#064e3b,stroke:#059669,stroke-width:1.5
+    style LaneData fill:#fff4e6,color:#7c2d12,stroke:#f97316,stroke-width:1.5
+    style LaneIdentity fill:#fef3c7,color:#78350f,stroke:#d97706,stroke-width:1.5
+    style MAS fill:#fff7ed,color:#7c2d12,stroke:#fb923c,stroke-width:1.5
+    style CFR fill:#1d4ed8,color:#ffffff,stroke:#1d4ed8,stroke-width:1.5
+
+    classDef endpoint fill:#bfdbfe,color:#1e3a8a,stroke:#60a5fa,stroke-width:1.5;
+    classDef runtime fill:#c7d2fe,color:#1e1b4b,stroke:#818cf8,stroke-width:1.5;
+    classDef scaling fill:#ede9fe,color:#312e81,stroke:#a78bfa,stroke-width:1.5;
+    classDef platform fill:#bbf7d0,color:#064e3b,stroke:#34d399,stroke-width:1.5;
+    classDef data fill:#fed7aa,color:#7c2d12,stroke:#fb923c,stroke-width:1.5;
+    classDef identity fill:#fde68a,color:#78350f,stroke:#fbbf24,stroke-width:1.5;
+
+    class Browser,Mobile,Admin endpoint;
+    class UI,Workflow,Integration,DataSvc,SecurityAdapter runtime;
+    class VScale,HScale,C0,C1,CN scaling;
+    class CFAS,CS,XS platform;
+    class PG,OS,Backup data;
+    class IA,IADB,MA1 identity;

@@ -1,0 +1,67 @@
+{
+  "xsappname": "GREAT-china-test",
+  "tenant-mode": "dedicated",
+  "scopes": [
+    {
+      "name": "$XSAPPNAME.Administrator",
+      "description": "Administrator"
+    },
+    {
+      "name": "$XSAPPNAME.Guest",
+      "description": "Guest"
+    },
+    {
+      "name": "$XSAPPNAME.RequestParticipant",
+      "description": "RequestParticipant"
+    },
+    {
+      "name": "$XSAPPNAME.Requester",
+      "description": "Requester"
+    },
+    {
+      "name": "$XSAPPNAME.SuperUser",
+      "description": "SuperUser"
+    },
+    {
+      "name": "$XSAPPNAME.Viewer",
+      "description": "Viewer"
+    }
+  ],
+  "role-templates": [
+    {
+      "name": "Administrator",
+      "description": "Administrator",
+      "scope-references": ["$XSAPPNAME.Administrator", "uaa.user"]
+    },
+    {
+      "name": "Guest",
+      "description": "Guest",
+      "scope-references": ["$XSAPPNAME.Guest", "uaa.user"]
+    },
+    {
+      "name": "Requester",
+      "description": "Requester",
+      "scope-references": ["$XSAPPNAME.Requester", "uaa.user"]
+    },
+    {
+      "name": "RequestParticipant",
+      "description": "RequestParticipant",
+      "scope-references": ["$XSAPPNAME.RequestParticipant", "uaa.user"]
+    },
+    {
+      "name": "Viewer",
+      "description": "Viewer",
+      "scope-references": ["$XSAPPNAME.Viewer", "uaa.user"]
+    },
+    {
+      "name": "SuperUser",
+      "description": "SuperUser",
+      "scope-references": ["$XSAPPNAME.SuperUser", "uaa.user"]
+    }
+  ],
+  "oauth2-configuration": {
+    "redirect-uris": [
+      "https://CAR-DEV.cert.cfapps.eu10-004.hana.ondemand.com/xsauaacallback/**"
+    ]
+  }
+}

@@ -1,0 +1,193 @@
+Project RichemontRequestFlow {
+	database_type: "PostgreSQL"
+	note: "Data model for requester/reviewer/approver workflow as per UI mockups."
+}
+
+// ===================== ENUMS =====================
+Enum RequestStatusCode {
+	DRAFT                // Request created, incomplete ("To be completed")
+	PENDING_COMPLETION   // Explicitly awaiting requester to finish form
+	WAITING_REVIEW       // Submitted, awaiting first reviewer pick-up
+	IN_REVIEW            // Reviewer actively reviewing
+	WAITING_APPROVAL     // Review passed, queued for approver
+	IN_APPROVAL          // Approver actively approving
+	APPROVED             // Fully approved
+	REJECTED             // Rejected by reviewer or approver
+	CANCELLED            // Cancelled by requester (withdrawn)
+}
+
+Enum RequestParticipantRole {
+	REQUESTER
+	REVIEWER
+	APPROVER
+}
+
+Enum ActivityType {
+	STATUS_CHANGE        // Automatic entry for status transition
+	COMMENT              // User comment added
+	REVIEW_ACTION        // Explicit review outcome logged
+	APPROVAL_ACTION      // Explicit approval outcome logged
+}
+
+// ===================== TABLES =====================
+Table departments {
+	id          serial        [pk]
+	name        varchar(120)  [not null, unique]
+	region      varchar(80)   // e.g. "China" as per mockup
+	created_at  timestamptz   [default: `now()`]
+	note: "Logical department owning the request (UI shows 'IT - China')."
+}
+
+Table roles {
+	id          serial        [pk]
+	code        varchar(40)   [not null, unique] // REQUESTER / REVIEWER / APPROVER / ADMIN
+	name        varchar(80)   [not null]
+	created_at  timestamptz   [default: `now()`]
+}
+
+Table users {
+	id             serial        [pk]
+	display_name   varchar(120)  [not null]
+	email          varchar(255)  [not null, unique]
+	department_id  int           [ref: > departments.id]
+	active         boolean       [default: true]
+	created_at     timestamptz   [default: `now()`]
+	note: "Actor appearing in activity timeline (e.g. 'Jérôme Dacier', 'Jane Usval')."
+}
+
+Table user_roles {
+	user_id  int  [not null, ref: > users.id]
+	role_id  int  [not null, ref: > roles.id]
+	granted_at timestamptz [default: `now()`]
+	Note: "A user can hold multiple workflow roles (reviewer + approver)."
+	Indexes {
+		(user_id, role_id) [unique]
+	}
+}
+
+Table requests {
+	id                bigserial     [pk]
+	public_id         varchar(12)   [not null, unique] // Short ID shown in UI (e.g. 562828)
+	title             varchar(200)  [not null]         // "New boutique", "IT furnitures"
+	description       text          // "2 new laptops for new hires" etc.
+	requester_user_id int           [not null, ref: > users.id]
+	department_id     int           [ref: > departments.id]
+	current_status    RequestStatusCode [not null, default: 'DRAFT']
+	submitted_at      timestamptz   // First time leaving DRAFT
+	reviewed_at       timestamptz   // When review completed favorably
+	approved_at       timestamptz   // Final approval timestamp
+	rejected_at       timestamptz   // If rejected
+	cancelled_at      timestamptz   // If cancelled by requester
+	created_at        timestamptz   [default: `now()`]
+	updated_at        timestamptz   [default: `now()`]
+	note: "Central business object representing a workflow request."
+	Indexes {
+		current_status
+		(requester_user_id, current_status)
+		(department_id, current_status)
+	}
+}
+
+Table request_participants {
+	id            bigserial              [pk]
+	request_id    bigserial              [not null, ref: > requests.id]
+	user_id       int                    [not null, ref: > users.id]
+	role          RequestParticipantRole [not null]
+	added_at      timestamptz            [default: `now()`]
+	note: "Users linked to a request beyond requester; supports multiple reviewers/approvers."
+	Indexes {
+		(request_id, user_id, role) [unique]
+		role
+	}
+}
+
+Table request_status_history {
+	id              bigserial          [pk]
+	request_id      bigserial          [not null, ref: > requests.id]
+	from_status     RequestStatusCode  // nullable for first entry
+	to_status       RequestStatusCode  [not null]
+	changed_at      timestamptz        [default: `now()`]
+	changed_by_user int                [ref: > users.id]
+	activity_id     bigserial          [ref: - activities.id] // Back-link for consolidated activity
+	note: "Chronological immutable status transitions powering timeline (bullets + arrows)."
+	Indexes {
+		request_id
+		(request_id, changed_at)
+	}
+}
+
+Table comments {
+	id          bigserial     [pk]
+	request_id  bigserial     [not null, ref: > requests.id]
+	user_id     int           [not null, ref: > users.id]
+	body        text          [not null]
+	visible     boolean       [default: true] // Soft-hide (strike-through in timeline)
+	created_at  timestamptz   [default: `now()`]
+	note: "User-entered commentary; if superseded or removed show strike-through per mockup."
+	Indexes {
+		request_id
+	}
+}
+
+Table attachments {
+	id              bigserial    [pk]
+	request_id      bigserial    [not null, ref: > requests.id]
+	uploaded_by     int          [not null, ref: > users.id]
+	filename        varchar(200) [not null]
+	mime_type       varchar(120)
+	storage_uri     text         [not null] // e.g. object storage path
+	size_bytes      bigint       // For validation
+	uploaded_at     timestamptz  [default: `now()`]
+	note: "Files linked to request (e.g. laptops_specs.pdf)."
+	Indexes {
+		request_id
+	}
+}
+
+Table activities {
+	id              bigserial       [pk]
+	request_id      bigserial       [not null, ref: > requests.id]
+	actor_user_id   int             [ref: > users.id]
+	type            ActivityType    [not null]
+	status_to       RequestStatusCode // If type=STATUS_CHANGE captures target status
+	comment_id      bigserial       [ref: - comments.id]
+	detail          text            // Additional context (e.g. "Need budget approval")
+	created_at      timestamptz     [default: `now()`]
+	sequence_order  int             // Pre-computed ordering for efficient timeline rendering
+	note: "Unified timeline entries consumed by UI activity list with icons/arrows."
+	Indexes {
+		request_id
+		(request_id, created_at)
+	}
+}
+
+Table notifications {
+	id              bigserial     [pk]
+	user_id         int           [not null, ref: > users.id]
+	request_id      bigserial     [ref: > requests.id]
+	activity_id     bigserial     [ref: > activities.id]
+	delivered_at    timestamptz   // When pushed/shown
+	read_at         timestamptz   // Null = unread (bell icon indicator)
+	created_at      timestamptz   [default: `now()`]
+	note: "Bell icon feed — unread if read_at IS NULL."
+	Indexes {
+		(user_id, read_at)
+	}
+}
+
+// ===================== RELATIONSHIP NOTES =====================
+// - requests.current_status is cached for quick filtering; canonical history lives in request_status_history.
+// - activities provides a single source for timeline rendering; status changes & comments link back.
+// - request_participants supports dynamic multi-step chains (multiple sequential reviewers / approvers).
+// - notifications decouple user-facing alerts from activity log events.
+// - public_id chosen to be short & user friendly; could be generated (e.g. base36). Index ensures uniqueness.
+
+// ===================== MODELING RATIONALE =====================
+// UI Screens Supported:
+// 1. Pending requests list (filter by participant & status) -> queries on requests + request_participants
+// 2. Request detail timeline -> activities (JOIN status history, comments)
+// 3. Draft creation & auto-save -> requests (DRAFT) + attachments staged
+// 4. Role-based visibility -> user_roles + request_participants
+// 5. Bell notifications -> notifications (unread count)
+// 6. Strike-through removed comment/status -> comments.visible=false or mark in status history detail.
+
