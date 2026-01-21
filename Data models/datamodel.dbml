@@ -47,52 +47,65 @@ Enum Status {
 // *** Master data tables ***
 // Those value can be updated super user only
 
-
-Table Maison {
-  Code varchar [note: "Ex : CAR"]
-  Name varchar [note: "Ex : Cartier"]
-  Picture blob
+Table MD_CarStream {
+  Id varchar(2) [not null, note: "Ex : 7"]
+  Name varchar(20) [not null, note: "Ex : INTERNAL BOUTIQUE"]
 }
 
-Table CarStream {
-  Id varchar(2) [note: "Ex : 7"]
-  Name varchar(20) [note: "Ex : INTERNAL BOUTIQUE"]
+Table MD_CarType {
+  Code varchar(3) [not null, note: "Ex : NEW"]
+  Text varchar(20) [not null, note: "Ex : Opening Perm."]
 }
 
-Table CarType {
-  Code varchar(3) [note: "Ex : NEW"]
-  Text varchar(20) [note: "Ex : Opening Perm."]
+Table MD_BoutiqueEnvironment {
+  Code varchar(4) [not null, note: "Ex : RI02"]
+  Text varchar(20) [not null, note: "Ex : Interior Boutique"] 
 }
 
-Table BoutiqueEnvironment {
-  Code varchar(4) [note: "Ex : RI02"]
-  Text varchar(20) [note: "Ex : Interior Boutique"] 
-}
-
-Table BoutiqueType {
-  Code varchar(4) [note: "Ex : RI02"]
-  Text varchar(20) [note: "Ex : Interior Boutique"] 
+Table MD_BoutiqueType {
+  Code varchar(4) [not null, note: "Ex : RI02"]
+  Text varchar(20) [not null, note: "Ex : Interior Boutique"] 
 }
 
 // Can be updated by Excel upload
-Table Entity {
-  Code varchar(4) [note: "Ex : Z108"]
-  LocalCurrrency varchar(5) [note: "Ex : EUR"]
-  Name varchar(20) [note: "Ex : Richemont France"]
+Table MD_Entity {
+  Code varchar(4) [not null, note: "Ex : Z108"]
+  LocalCurrrency varchar(5) [not null, note: "Ex : EUR"]
+  Name varchar(20) [not null, note: "Ex : Richemont France"]
+  Region varchar [note: "Ex : APAC", ref: > MD_Region.Code]
+  Market varchar [note: "Ex : FR", ref: > MD_Market.Code]
 }
 
-Table RoleMatrix {
-  Stream Stream
-  Scope Scope
-  Responsibility Responsibility
-  Order int [note : "Defines the order of approval in a given scope and responsibility"]
+Table MD_RoleMatrix {
+  Scope Scope [not null]
+  Responsibility Responsibility [not null]
+  CarStream varchar(2) [not null, ref: > MD_CarStream.Id]
+  CarType varchar(3) [not null, ref: > MD_CarType.Code]
+  Order int [not null, note : "Defines the order of approval in a given scope and responsibility"]
   Role varchar(200) [not null, note : "Ex : Chairman" ]
 }
 
-Table StreamScreen {
-  CarStream CarStream [ref: > CarStream.Id]
-  CarType CarType [ref: > CarType.Code]
+Table MD_StreamScreen {
+  CarStream varchar(2) [not null, ref: > MD_CarStream.Id]
+  CarType varchar(3) [not null, ref: > MD_CarType.Code]
   ScreenName varchar [note : "Screen number from 1 to 9"]
+}
+
+//maison + group 
+Table MD_BusinessArea {
+  Code varchar [not null, note: "Ex : CAR OR RCHMT, ..."]
+  Name varchar [not null, note: "Ex : Cartier OR Richemont, ..."]
+  Picture blob
+}
+
+Table MD_Region {
+  Code varchar [not null, note: "Ex : APAC"]
+  Name varchar [not null, note: "Ex : Europe Middle East and Africa"]
+}
+
+Table MD_Market {
+  Code varchar [not null, note: "Ex : FR"]
+  Name varchar [not null, note: "Ex : France"]
 }
 
 // *** App tables ***
@@ -102,10 +115,9 @@ Table StreamScreen {
 Table User {
   Id varchar [pk, not null]
   JobTitle varchar
-  Scope Scope [not null]
-  Maison varchar [ref: > Maison.Code]
-  Region varchar 
-  Market varchar
+  BusinessArea varchar [not null, ref: > MD_BusinessArea.Code]
+  Region varchar [ref: > MD_Region.Code]
+  Market varchar [ref: > MD_Market.Code]
   picture blob
 }
 
@@ -126,8 +138,8 @@ Table RequestRole {
 Table Request {
   Requester varchar [ref: > User.Id, not null]
   SEMNumber varchar [pk] 
-  CarStream CarStream [not null]
-  CarType CarType [not null]
+  CarStream varchar(2) [not null, ref: > MD_CarStream.Id]
+  CarType varchar(3) [not null, ref: > MD_CarType.Code]
   Currency varchar [ not null]
   Status Status [not null]
   CreatedOn datetime [not null]
@@ -161,16 +173,16 @@ Table RequestInformation {
   Id varchar [pk]
   RequestVersionId varchar [ref: - RequestVersion.Id]
   FxRate decimal [not null]
-  Maison Maison [not null]
+  Maison varchar [not null, ref: > MD_BusinessArea.Code]
+  ReportingEntity varchar [not null, note: "Ex : 59 - Richmt Korea", ref: > MD_Entity.Code]
   Stream varchar [note: "Ex : Manufacturing"]
   RequestType varchar [note: "Ex : Relocation without lease renewal"]
   RequestName varchar [note: "Ex : Hyundai main"]
   StreetName varchar [note: "Ex : 123 Main St"]
-  BoutiqueType varchar [note: "Ex : Flagship"]
-  BoutiqueEnvironment varchar [note: "Ex : Street Boutique"]
+  BoutiqueType varchar(4) [note: "Ex : Flagship", ref: > MD_BoutiqueType.Code]
+  BoutiqueEnvironment varchar(4) [note: "Ex : Street Boutique", ref: > MD_BoutiqueEnvironment.Code]
   Location varchar [note: "Ex : Seoul"]
   Country varchar [note: "Ex : France"]
-  ReportingEntity varchar [note: "Ex : 59 - Richmt Korea"]
   CompletionDate datetime [note: "Format: dd.mm.yyyy"]
   BudgetProject BudgetProject [not null]
   BudgetProjectDetails text []
