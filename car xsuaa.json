@@ -1,5 +1,5 @@
 {
-  "xsappname": "GREAT-china-test",
+  "xsappname": "CAR",
   "tenant-mode": "dedicated",
   "scopes": [
     {
@@ -61,7 +61,7 @@
   ],
   "oauth2-configuration": {
     "redirect-uris": [
-      "https://CAR-DEV.cert.cfapps.eu10-004.hana.ondemand.com/xsauaacallback/**"
+      "https://CAR-*.cert.cfapps.eu10-004.hana.ondemand.com/xsauaacallback/**"
     ]
   }
 }

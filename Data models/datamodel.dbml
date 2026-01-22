@@ -72,8 +72,6 @@ Table MD_Entity {
   Code varchar(4) [not null, note: "Ex : Z108"]
   LocalCurrrency varchar(5) [not null, note: "Ex : EUR"]
   Name varchar(20) [not null, note: "Ex : Richemont France"]
-  Region varchar [note: "Ex : APAC", ref: > MD_Region.Code]
-  Market varchar [note: "Ex : FR", ref: > MD_Market.Code]
 }
 
 Table MD_RoleMatrix {
@@ -85,6 +83,7 @@ Table MD_RoleMatrix {
   Role varchar(200) [not null, note : "Ex : Chairman" ]
 }
 
+//to match the correct screen
 Table MD_StreamScreen {
   CarStream varchar(2) [not null, ref: > MD_CarStream.Id]
   CarType varchar(3) [not null, ref: > MD_CarType.Code]
@@ -104,8 +103,10 @@ Table MD_Region {
 }
 
 Table MD_Market {
-  Code varchar [not null, note: "Ex : FR"]
-  Name varchar [not null, note: "Ex : France"]
+  Country varchar [PK, not null, note: "Ex : FRANCE"]
+  Code varchar [not null, note: "Ex : BENELUX"]
+  Name varchar [not null, note: "Ex : Benelux"]
+  RegionCode varchar [not null, ref: > MD_Region.Code]
 }
 
 // *** App tables ***
@@ -181,8 +182,8 @@ Table RequestInformation {
   StreetName varchar [note: "Ex : 123 Main St"]
   BoutiqueType varchar(4) [note: "Ex : Flagship", ref: > MD_BoutiqueType.Code]
   BoutiqueEnvironment varchar(4) [note: "Ex : Street Boutique", ref: > MD_BoutiqueEnvironment.Code]
-  Location varchar [note: "Ex : Seoul"]
-  Country varchar [note: "Ex : France"]
+  Location varchar [note: "Ex : Seoul"] // City 
+  Country varchar [note: "Ex : France", ref: > MD_Market.Country] // REGION-> MARKET-> COUNTRY
   CompletionDate datetime [note: "Format: dd.mm.yyyy"]
   BudgetProject BudgetProject [not null]
   BudgetProjectDetails text []
