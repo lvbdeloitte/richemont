@@ -116,7 +116,7 @@ Table MD_Market {
 Table User {
   Id varchar [pk, not null]
   JobTitle varchar
-  BusinessArea varchar [not null, ref: > MD_BusinessArea.Code]
+  BusinessArea varchar [ref: > MD_BusinessArea.Code]
   Region varchar [ref: > MD_Region.Code]
   Market varchar [ref: > MD_Market.Code]
   picture blob
