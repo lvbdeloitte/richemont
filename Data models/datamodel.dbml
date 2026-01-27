@@ -49,7 +49,7 @@ Enum Status {
 
 Table MD_CarStream {
   Id varchar(2) [not null, note: "Ex : 7"]
-  Name varchar(60) [not null, note: "Ex : INTERNAL BOUTIQUE"]
+  Name varchar(60) [not null, note: "Ex : Distribution - INTERNAL BOUTIQUE"]
 }
 
 Table MD_CarType {
