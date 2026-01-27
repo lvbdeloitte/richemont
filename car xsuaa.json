@@ -15,8 +15,8 @@
       "description": "RequestParticipant"
     },
     {
-      "name": "$XSAPPNAME.Requester",
-      "description": "Requester"
+      "name": "$XSAPPNAME.RequestCreator",
+      "description": "RequestCreator"
     },
     {
       "name": "$XSAPPNAME.SuperUser",

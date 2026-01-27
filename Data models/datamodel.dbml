@@ -72,6 +72,8 @@ Table MD_Entity {
   Code varchar(4) [not null, note: "Ex : Z108"]
   LocalCurrrency varchar(5) [not null, note: "Ex : EUR"]
   Name varchar(20) [not null, note: "Ex : Richemont France"]
+  Region varchar [not null, ref: > MD_Region.Name]
+  Market varchar [not null, ref: > MD_Market.Name] // country
 }
 
 Table MD_RoleMatrix {
@@ -98,15 +100,13 @@ Table MD_BusinessArea {
 }
 
 Table MD_Region {
-  Code varchar [not null, note: "Ex : APAC"]
   Name varchar [not null, note: "Ex : Europe Middle East and Africa"]
 }
 
 Table MD_Market {
   Country varchar [PK, not null, note: "Ex : FRANCE"]
-  Code varchar [not null, note: "Ex : BENELUX"]
-  Name varchar [not null, note: "Ex : Benelux"]
-  RegionCode varchar [not null, ref: > MD_Region.Code]
+  Code varchar [not null, note: "Ex : FR"]
+  RegionCode varchar [not null, ref: > MD_Region.Name]
 }
 
 // *** App tables ***
@@ -117,8 +117,8 @@ Table User {
   Id varchar [pk, not null]
   JobTitle varchar
   BusinessArea varchar [ref: > MD_BusinessArea.Code]
-  Region varchar [ref: > MD_Region.Code]
-  Market varchar [ref: > MD_Market.Code]
+  Region varchar [ref: > MD_Region.Name]
+  Market varchar [ref: > MD_Market.Name]
   picture blob
 }
 
