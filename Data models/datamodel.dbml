@@ -44,6 +44,12 @@ Enum Status {
   ROLE_CHANGED
 }
 
+Enum RoleCode {
+  INPUT_CAR_ENT
+  INPUT_CAR_BRD
+  INPUT_CAR_CDG
+}
+
 // *** Master data tables ***
 // Those value can be updated super user only
 
@@ -112,6 +118,17 @@ Table MD_Market {
   Country varchar [PK, not null, note: "Ex : FRANCE"]
   Code varchar [not null, note: "Ex : FR"]
   Region varchar [not null, ref: > MD_Region.Name]
+}
+
+// This table will be sync from SAP SEM in the futur
+Table MD_UserRoles {
+  Email varchar [not null]
+  SAPUserId varchar [not null]
+  Role_Code RoleCode [not null]
+  Maison varchar [not null]
+  ReportingEntity varchar [not null]
+  Name varchar [not null]
+  Surname varchar [not null]
 }
 
 // *** App tables ***
