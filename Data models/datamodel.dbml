@@ -247,4 +247,5 @@ Table Activity {
   RequestId varchar [ref: > Request.SEMNumber]
   CreatedDate datetime
   CreatedBy varchar [ref: > User.Id]
+  CreatedByRole RoleCode
 }
