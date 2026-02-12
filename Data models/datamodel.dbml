@@ -156,6 +156,7 @@ Table RequestRole {
   CreatedBy varchar [ref: > User.Id]
   UpdatedOn datetime
   UpdatedBy varchar [ref: > User.Id]
+  Order int [not null, note : "Defines the order of approval in a given scope and responsibility"]
 }
 
 Table Request {
