@@ -1,0 +1,82 @@
+{
+  "d": {
+    "results": [
+      {
+        "__metadata": {
+          "id": "https://BSDWEBDISP.RICHEMONT.COM:443/sap/opu/odata/sap/YQR_YPLCT001_0100_SRV/YQR_YPLCT001_0100Results('V2.101.103.0_1.2.4.4.1.2.5.5%3A5.8.3.1.2.3.14.4.4.4.8.2.8.12.1.X.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1_IBT20202025IBT12415124151241500000415DUN507NEWBeijing%20StreetRI04RI01CNSLShenyangCN2022041300000415CNSLB')",
+          "uri": "https://BSDWEBDISP.RICHEMONT.COM:443/sap/opu/odata/sap/YQR_YPLCT001_0100_SRV/YQR_YPLCT001_0100Results('V2.101.103.0_1.2.4.4.1.2.5.5%3A5.8.3.1.2.3.14.4.4.4.8.2.8.12.1.X.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1_IBT20202025IBT12415124151241500000415DUN507NEWBeijing%20StreetRI04RI01CNSLShenyangCN2022041300000415CNSLB')",
+          "type": "YQR_YPLCT001_0100_SRV.YQR_YPLCT001_0100Result"
+        },
+        "ID": "V2.101.103.0_1.2.4.4.1.2.5.5:5.8.3.1.2.3.14.4.4.4.8.2.8.12.1.X.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1_IBT20202025IBT12415124151241500000415DUN507NEWBeijing StreetRI04RI01CNSLShenyangCN2022041300000415CNSLB",
+        "TotaledProperties": "",
+        "YPLCH001": "12415",
+        "YPLCH001_T": "12415",
+        "YPLCH001_0CREATEDBY": "RYAN1",
+        "YGRCH020": "415",
+        "YGRCH020_T": "Richemont Commercial Company Limited",
+        "YGRCH020_0CURKEY_LC": "CNY",
+        "YGRCH009": "DUN",
+        "YGRCH009_T": "dunhill",
+        "YPLCH001__YPLCH002": "5",
+        "YPLCH001__YPLCH002_T": "Completed",
+        "YPLCH001__YPLCH037": "7",
+        "YPLCH001__YPLCH037_T": "INTERNAL BOUTIQUE",
+        "YPLCH001__YPLCH003": "NEW",
+        "YPLCH001__YPLCH003_T": "Boutique Opening",
+        "YPLCH001__YCRCH014": "Beijing Street",
+        "YPLCH001__YGRCH085": "RI04",
+        "YPLCH001__YGRCH085_T": "Street Boutique",
+        "YPLCH001__YGRCH087": "RI01",
+        "YPLCH001__YGRCH087_T": "Mall",
+        "YPLCH001__YGRCH017": "CNSL",
+        "YPLCH001__YGRCH017_T": "DUN-Shenyang-Charter",
+        "YPLCH001__YGRCH010": "Shenyang",
+        "YPLCH001__YGRCH018": "CN",
+        "YPLCH001__YGRCH018_T": "China",
+        "YPLCH001__YPLCH008": "20220413",
+        "YPLCH001__YPLCH008_T": "13.04.2022",
+        "YPLCH001__YCRCH003": "415/CNSL",
+        "YPLCH001__YCRCH003_T": "DUN SHY Charter",
+        "YPLCH001__YCRCH001_T": "Boutique",
+        "YPLKF045": "6795.00",
+        "YPLKF045_F": "6.795,00 CNY",
+        "YPLKF046": "0",
+        "YPLKF046_F": "",
+        "YPLKF047": "0",
+        "YPLKF047_F": "",
+        "YPLKF048": "35.00",
+        "YPLKF048_F": "35,00 CNY",
+        "YPLKF049": "0",
+        "YPLKF049_F": "",
+        "YPLKF050": "980.00",
+        "YPLKF050_F": "980,00 CNY",
+        "YPLKF045B": "0",
+        "YPLKF045B_F": "0,00 CNY",
+        "YPLKF045B_E": "CNY",
+        "YPLKF051": "160",
+        "YPLKF051_F": "160 M2",
+        "YPLKF051_E": "M2",
+        "YPLKF052": "159",
+        "YPLKF052_F": "159 M2",
+        "YPLKF052_E": "M2",
+        "YPLKF053": "35",
+        "YPLKF053_F": "35 M2",
+        "YPLKF053_E": "M2",
+        "YPLKF054": "35",
+        "YPLKF054_F": "35 M2",
+        "YPLKF054_E": "M2",
+        "YPLKF055": "0",
+        "YPLKF055_F": "0 M2",
+        "YPLKF055_E": "M2",
+        "YPLKF056": "0",
+        "YPLKF056_F": "0 M2",
+        "YPLKF056_E": "M2",
+        "Parameters": {
+          "__deferred": {
+            "uri": "https://BSDWEBDISP.RICHEMONT.COM:443/sap/opu/odata/sap/YQR_YPLCT001_0100_SRV/YQR_YPLCT001_0100Results('V2.101.103.0_1.2.4.4.1.2.5.5%3A5.8.3.1.2.3.14.4.4.4.8.2.8.12.1.X.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1_IBT20202025IBT12415124151241500000415DUN507NEWBeijing%20StreetRI04RI01CNSLShenyangCN2022041300000415CNSLB')/Parameters"
+          }
+        }
+      }
+    ]
+  }
+}
