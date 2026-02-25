@@ -7,24 +7,12 @@
       "description": "Administrator"
     },
     {
-      "name": "$XSAPPNAME.Guest",
-      "description": "Guest"
-    },
-    {
-      "name": "$XSAPPNAME.RequestParticipant",
-      "description": "RequestParticipant"
-    },
-    {
-      "name": "$XSAPPNAME.RequestCreator",
-      "description": "RequestCreator"
+      "name": "$XSAPPNAME.Default",
+      "description": "Default"
     },
     {
       "name": "$XSAPPNAME.SuperUser",
       "description": "SuperUser"
-    },
-    {
-      "name": "$XSAPPNAME.Viewer",
-      "description": "Viewer"
     }
   ],
   "role-templates": [
@@ -34,24 +22,9 @@
       "scope-references": ["$XSAPPNAME.Administrator", "uaa.user"]
     },
     {
-      "name": "Guest",
-      "description": "Guest",
-      "scope-references": ["$XSAPPNAME.Guest", "uaa.user"]
-    },
-    {
-      "name": "Requester",
-      "description": "Requester",
-      "scope-references": ["$XSAPPNAME.Requester", "uaa.user"]
-    },
-    {
-      "name": "RequestParticipant",
-      "description": "RequestParticipant",
-      "scope-references": ["$XSAPPNAME.RequestParticipant", "uaa.user"]
-    },
-    {
-      "name": "Viewer",
-      "description": "Viewer",
-      "scope-references": ["$XSAPPNAME.Viewer", "uaa.user"]
+      "name": "Default",
+      "description": "Default",
+      "scope-references": ["$XSAPPNAME.Default", "uaa.user"]
     },
     {
       "name": "SuperUser",
